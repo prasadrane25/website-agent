@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>website-agent</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+      }
+      body {
+        max-width: 42rem;
+        margin: 3rem auto;
+        padding: 0 1rem;
+      }
+      button {
+        margin-top: 0.75rem;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+      }
+      pre {
+        background: #e2e8f0;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>website-agent</h1>
+    <p>Submit a design title to exercise the placeholder agent API.</p>
+    <label>
+      Design title
+      <input id="title" type="text" value="Landing page mockup" style="display: block; width: 100%; margin-top: 0.25rem" />
+    </label>
+    <button id="submit" type="button">Generate preview</button>
+    <pre id="out">Waiting…</pre>
+    <script>
+      document.getElementById("submit").addEventListener("click", async () => {
+        const title = document.getElementById("title").value;
+        const res = await fetch("/api/design-preview", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title }),
+        });
+        const data = await res.json();
+        document.getElementById("out").textContent = JSON.stringify(data, null, 2);
+      });
+      fetch("/api/health")
+        .then((r) => r.json())
+        .then((d) => {
+          document.getElementById("out").textContent = "Health: " + JSON.stringify(d);
+        });
+    </script>
+  </body>
+</html>
